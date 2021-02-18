@@ -13,7 +13,8 @@ function bruteForce(int $mode, string $file, string $password) : void
 {
     $source = fopen(__DIR__ . '/' . $file, 'r');
     $match = false;
-    $text = $mode === 1 ? 'Hashed' : 'Plain';
+    $row = 0;
+    $text = $mode === 1 ? 'Plain' : 'Hashed';
 
     if (!$source) {
         die("File doesn't exist / Can't be opened!");
@@ -21,6 +22,7 @@ function bruteForce(int $mode, string $file, string $password) : void
 
     while (($eachLine = fgets($source)) !== false) {
         $line = trim($eachLine);
+        $row++;
 
         if ($mode === 1) {
             $match = password_verify($line, $password);
@@ -29,7 +31,7 @@ function bruteForce(int $mode, string $file, string $password) : void
         }
 
         if ($match) {
-            echo $text . " Password: " . $line;
+            echo "${text} Password: ${line} (line ${row})";
 
             break;
         }
@@ -38,7 +40,7 @@ function bruteForce(int $mode, string $file, string $password) : void
     fclose($source);
 
     if (!$match) {
-        echo "No " . $text . " Password Found!";
+        echo "No ${text} Password Found!";
     }
 
     die();
@@ -57,6 +59,8 @@ function bruteForceFile($sourceFile, $targetFile) : void
     $source = fopen(__DIR__ . '/' . $sourceFile, 'r');
     $target = fopen(__DIR__ . '/' . $targetFile, 'r');
     $match = false;
+    $rowSource = 0;
+    $rowTarget = 0;
 
     if (!$source) {
         die("File Database doesn't exist / Can't be opened!");
@@ -65,13 +69,16 @@ function bruteForceFile($sourceFile, $targetFile) : void
     }
 
     while (($eachSourceLine = fgets($source)) !== false) {
+        $rowSource++;
+
         while (($eachTargetLine = fgets($target)) !== false) {
             $sourceLine = trim($eachSourceLine);
             $targetLine = trim($eachTargetLine);
             $match = password_verify($targetLine, $sourceLine);
+            $rowTarget++;
 
             if ($match) {
-                echo $sourceLine . " => " . $targetLine . PHP_EOL;
+                echo "${sourceLine} (line ${rowSource}) => ${targetLine} (line ${rowTarget})" . PHP_EOL;
 
                 break;
             }
