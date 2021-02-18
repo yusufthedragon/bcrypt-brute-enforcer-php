@@ -1,0 +1,8 @@
+password
+123456
+test
+helloworld
+P@ssw0rd
+p@ssw0rd
+SecretPassword
+rahasia123
